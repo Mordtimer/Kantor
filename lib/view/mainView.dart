@@ -72,6 +72,9 @@ class _MainViewState extends State<MainView> {
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
             ),
+            OutlineButton(onPressed: () {
+              Navigator.pushNamed(context, '/tmp');
+            })
           ],
         ),
       ),
