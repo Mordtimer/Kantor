@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kantor_app/theme/config.dart';
 import 'package:kantor_app/theme/defaultTheme.dart';
-import 'package:kantor_app/view/mainView.dart';
 import 'package:kantor_app/view/tmpView.dart';
 
 class App extends StatefulWidget {
@@ -29,8 +28,7 @@ class _AppState extends State {
       //debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
-        '/': (context) => MainView(),
-        '/tmp': (context) => tmpView(),
+        '/': (context) => TmpView(),
       },
     );
   }
