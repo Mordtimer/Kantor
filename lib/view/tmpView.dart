@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:kantor_app/model/tmpData.dart';
 
 class TmpView extends StatefulWidget {
@@ -114,40 +117,46 @@ class CurrencyInfo extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text("Current Exchange",style: TextStyle(fontSize: 18)),
-                              Text(currency.value.toString(),style: TextStyle(fontSize: 18))
+                              Text("Current Exchange",
+                                  style: TextStyle(fontSize: 18)),
+                              Text(currency.value.toString(),
+                                  style: TextStyle(fontSize: 18))
                             ],
                           ),
                           Divider(),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text("Change",style: TextStyle(fontSize: 18)),
-                              Text(currency.change.toString(),style: TextStyle(fontSize: 18))
+                              Text("Change", style: TextStyle(fontSize: 18)),
+                              Text(currency.change.toString(),
+                                  style: TextStyle(fontSize: 18))
                             ],
                           ),
                           Divider(),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text("Change %",style: TextStyle(fontSize: 18)),
-                              Text(currency.changePercent.toString(),style: TextStyle(fontSize: 18))
+                              Text("Change %", style: TextStyle(fontSize: 18)),
+                              Text(currency.changePercent.toString(),
+                                  style: TextStyle(fontSize: 18))
                             ],
                           ),
                           Divider(),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text("Year High",style: TextStyle(fontSize: 18)),
-                              Text(currency.yearMax.toString(),style: TextStyle(fontSize: 18))
+                              Text("Year High", style: TextStyle(fontSize: 18)),
+                              Text(currency.yearMax.toString(),
+                                  style: TextStyle(fontSize: 18))
                             ],
                           ),
                           Divider(),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text("Year Low",style: TextStyle(fontSize: 18)),
-                              Text(currency.yearMin.toString(),style: TextStyle(fontSize: 18))
+                              Text("Year Low", style: TextStyle(fontSize: 18)),
+                              Text(currency.yearMin.toString(),
+                                  style: TextStyle(fontSize: 18))
                             ],
                           ),
                         ],
@@ -188,17 +197,18 @@ class CurrencyInfo extends StatelessWidget {
   }
 }
 
-class CurrencyConverter extends StatefulWidget { //---------------------------------------------------------------------------------------- TODO: Converter Functionality
+class CurrencyConverter extends StatefulWidget {
+  //---------------------------------------------------------------------------------------- TODO: Converter Functionality
   @override
   State<CurrencyConverter> createState() => _CurrencyConverterState();
 }
 
 class _CurrencyConverterState extends State<CurrencyConverter> {
   List<String> _nameList = TmpDataListShorts.shorts;
-  String dropdownValueFrom = "PLN";
-  String dropdownValueTo = "USD";
-  TextEditingController fieldValueFrom;
-  TextEditingController fieldValueTo;
+  String dropdownValueFrom = "USD";
+  String dropdownValueTo = "EUR";
+  TextEditingController fieldValueFrom = TextEditingController();
+  TextEditingController fieldValueTo = TextEditingController(text: "0");
 
   void swapConvertedCurrencies() {
     setState(() {
@@ -206,6 +216,39 @@ class _CurrencyConverterState extends State<CurrencyConverter> {
       dropdownValueFrom = dropdownValueTo;
       dropdownValueTo = tmp;
     });
+    getConverterResponse();
+  }
+
+  void getConverterResponse() async {
+    if (fieldValueFrom.text != null && fieldValueFrom.text != "") {
+      var queryParameters = {
+        'from': '${dropdownValueFrom.toLowerCase()}',
+        'to': '${dropdownValueTo.toLowerCase()}'
+      };
+      var uri =
+          Uri.https('kantor-app.herokuapp.com', '/currencies', queryParameters);
+
+      final response = await http.get(uri, headers: {
+        HttpHeaders.contentTypeHeader: 'application/json',
+        "Access-Control_Allow_Origin": "*"
+      });
+
+      if (response.statusCode == 200) {
+        String convertionValue = response.body.toString();
+        double doubleValue = double.parse(
+            convertionValue.substring(9, convertionValue.length - 2));
+        double finalResult = double.parse(fieldValueFrom.text) * doubleValue;
+        setState(() {
+          fieldValueTo.text = finalResult.toStringAsFixed(2);
+        });
+      } else {
+        throw Exception('Failed to get converter response');
+      }
+    } else {
+      setState(() {
+        fieldValueTo.text = 0.toString();
+      });
+    }
   }
 
   @override
@@ -224,11 +267,15 @@ class _CurrencyConverterState extends State<CurrencyConverter> {
                 setState(() {
                   dropdownValueFrom = newValue;
                 });
+                getConverterResponse();
               },
               items: _nameList.map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
-                  child: Text(value, style: TextStyle(fontSize: 32),),
+                  child: Text(
+                    value,
+                    style: TextStyle(fontSize: 32),
+                  ),
                 );
               }).toList(),
             ),
@@ -238,10 +285,12 @@ class _CurrencyConverterState extends State<CurrencyConverter> {
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(8))),
               child: TextField(
+                controller: fieldValueFrom,
+                onChanged: (value) => getConverterResponse(),
                 style: TextStyle(fontSize: 24),
                 obscureText: false,
                 inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.allow(RegExp('[0-9,]')),
+                  FilteringTextInputFormatter.allow(RegExp('[0-9.]')),
                 ],
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
@@ -282,11 +331,15 @@ class _CurrencyConverterState extends State<CurrencyConverter> {
                 setState(() {
                   dropdownValueTo = newValue;
                 });
+                getConverterResponse();
               },
               items: _nameList.map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
-                  child: Text(value, style: TextStyle(fontSize: 32),),
+                  child: Text(
+                    value,
+                    style: TextStyle(fontSize: 32),
+                  ),
                 );
               }).toList(),
             ),
@@ -296,8 +349,10 @@ class _CurrencyConverterState extends State<CurrencyConverter> {
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(8))),
               child: TextField(
+                controller: fieldValueTo,
                 style: TextStyle(fontSize: 24),
                 obscureText: false,
+                readOnly: true,
                 inputFormatters: <TextInputFormatter>[
                   FilteringTextInputFormatter.allow(RegExp('[0-9,]')),
                 ],
@@ -321,17 +376,12 @@ class RatesHistory extends StatefulWidget {
 }
 
 class _RatesHistoryState extends State<RatesHistory> {
-
-Color pickColor(int index)
-{
-  if(index %2 == 0)
-    return Colors.white;
-  else
-    return Theme.of(context).cardColor;
-}
-
-
-
+  Color pickColor(int index) {
+    if (index % 2 == 0)
+      return Colors.white;
+    else
+      return Theme.of(context).cardColor;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -363,9 +413,11 @@ Color pickColor(int index)
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Date",style: Theme.of(context).textTheme.bodyText1),
+                        Text("Date",
+                            style: Theme.of(context).textTheme.bodyText1),
                         //Icon(icon) // Rate Indicator - UpArrowGreen/DownArrowRed
-                        Text("Exchange Rate",style: Theme.of(context).textTheme.bodyText1)
+                        Text("Exchange Rate",
+                            style: Theme.of(context).textTheme.bodyText1)
                       ],
                     ),
                   ),
@@ -382,12 +434,12 @@ Color pickColor(int index)
                               color: pickColor(index),
                               padding: EdgeInsets.all(8),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text("01.01.2021"),
                                   //Icon(icon) // Rate Indicator - UpArrowGreen/DownArrowRed
                                   Text("1.00")
-                                  
                                 ],
                               ),
                             );
