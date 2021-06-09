@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:kantor_app/model/cookieManager.dart';
 import 'package:kantor_app/viewModel/ViewModel.dart';
 
+import 'CurrencyInfo.dart';
+
 class MainView extends StatefulWidget {
   @override
   _MainViewState createState() => _MainViewState();
@@ -85,9 +87,9 @@ class _MainViewState extends State<MainView> {
                 // ---------------------------------------------------------------------------------------- Currency Info - Info, Converter, Graph, Details
                 flex: 8,
                 child: Padding(
-                    padding: const EdgeInsets.fromLTRB(32, 0, 0, 0),
-                    child: Container() // CurrencyInfo(_currentCurrency),
-                    ))
+                  padding: const EdgeInsets.fromLTRB(32, 0, 0, 0),
+                  child: CurrencyInfo(viewModel.currentCurrency),
+                ))
           ],
         ),
       )),
