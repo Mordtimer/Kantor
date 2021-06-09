@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kantor_app/model/tmpData.dart';
+import 'package:kantor_app/model/cookieManager.dart';
 import 'package:kantor_app/viewModel/ViewModel.dart';
-
-import 'CurrencyInfo.dart';
 
 class MainView extends StatefulWidget {
   @override
@@ -10,19 +8,26 @@ class MainView extends StatefulWidget {
 }
 
 class _MainViewState extends State<MainView> {
-  ViewModel viewmodel = ViewModel();
-  
-  TmpCurrency _currentCurrency;
-  _MainViewState() {
-    _currentCurrency = _list[0];
-  }
+  ViewModel viewModel = ViewModel();
+  final _list = ViewModel.currencyList;
+
   void setCurrentCurrency(currency) {
     setState(() {
-      _currentCurrency = currency;
+      viewModel.currentCurrency = currency;
     });
   }
 
-  List<TmpCurrency> _list = TmpDataList.list;
+  void setFavCurrency(index) {
+    setState(() {
+      if (_list[index].fav) {
+        _list[index].fav = false;
+        CookieManager.removeFromCookie(_list[index].shortName);
+      } else {
+        _list[index].fav = true;
+        CookieManager.addToCookie(_list[index].shortName);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +58,13 @@ class _MainViewState extends State<MainView> {
                             itemBuilder: (context, index) {
                               return ListTile(
                                   // ---------------------------------------------------------------------------------------- List Item
-                                  // leading: flag_icon,
+                                  trailing: IconButton(
+                                      icon: Icon(_list[index].fav
+                                          ? Icons.star
+                                          : Icons.star_border),
+                                      onPressed: () {
+                                        setFavCurrency(index);
+                                      }),
                                   title: Text(_list[index].shortName,
                                       style: Theme.of(context)
                                           .textTheme
@@ -73,9 +84,9 @@ class _MainViewState extends State<MainView> {
                 // ---------------------------------------------------------------------------------------- Currency Info - Info, Converter, Graph, Details
                 flex: 8,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(32, 0, 0, 0),
-                  child: CurrencyInfo(_currentCurrency),
-                ))
+                    padding: const EdgeInsets.fromLTRB(32, 0, 0, 0),
+                    child: Container() // CurrencyInfo(_currentCurrency),
+                    ))
           ],
         ),
       )),
