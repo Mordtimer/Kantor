@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kantor_app/model/tmpData.dart';
+import 'package:kantor_app/viewModel/ViewModel.dart';
 
 import 'CurrencyInfo.dart';
 
@@ -9,6 +10,8 @@ class MainView extends StatefulWidget {
 }
 
 class _MainViewState extends State<MainView> {
+  ViewModel viewmodel = ViewModel();
+  
   TmpCurrency _currentCurrency;
   _MainViewState() {
     _currentCurrency = _list[0];
