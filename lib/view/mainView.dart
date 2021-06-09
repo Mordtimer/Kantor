@@ -9,7 +9,7 @@ class MainView extends StatefulWidget {
 
 class _MainViewState extends State<MainView> {
   ViewModel viewModel = ViewModel();
-  final _list = ViewModel.currencyList;
+  final _list = ViewModel.getCurrencyList();
 
   void setCurrentCurrency(currency) {
     setState(() {
@@ -26,6 +26,7 @@ class _MainViewState extends State<MainView> {
         _list[index].fav = true;
         CookieManager.addToCookie(_list[index].shortName);
       }
+      _list.sort((a, b) => b.fav.toString().compareTo(a.fav.toString()));
     });
   }
 
