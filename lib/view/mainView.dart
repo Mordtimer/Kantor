@@ -1,75 +1,81 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:kantor_app/model/tmpData.dart';
+
+import 'CurrencyInfo.dart';
 
 class MainView extends StatefulWidget {
-  MainView({Key key}) : super(key: key);
-
   @override
   _MainViewState createState() => _MainViewState();
 }
 
 class _MainViewState extends State<MainView> {
-  int _counter = 0;
-
-  void _incrementCounter() {
+  TmpCurrency _currentCurrency;
+  _MainViewState() {
+    _currentCurrency = _list[0];
+  }
+  void setCurrentCurrency(currency) {
     setState(() {
-    
-      _counter++;
+      _currentCurrency = currency;
     });
   }
 
+  List<TmpCurrency> _list = TmpDataList.list;
+
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text('Kantor'),
+        title: Text('Kantor', style: Theme.of(context).textTheme.headline3),
+        centerTitle: true,
+        toolbarHeight: 80,
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
+      body: Container(
+          child: Padding(
+        padding: const EdgeInsets.fromLTRB(96, 0, 192, 0),
+        child: Row(
+          children: [
+            Expanded(
+              flex: 2,
+              child: Container(
+                color: Theme.of(context).cardColor,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: ListView.separated(
+                            // ---------------------------------------------------------------------------------------- List of Currencies
+                            itemCount: _list.length,
+                            separatorBuilder: (context, index) => Divider(),
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                  // ---------------------------------------------------------------------------------------- List Item
+                                  // leading: flag_icon,
+                                  title: Text(_list[index].shortName,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline5),
+                                  subtitle: Text(_list[index].name),
+                                  onTap: () {
+                                    setCurrentCurrency(_list[index]);
+                                  });
+                            }),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-            OutlinedButton( child: Text("syf"), onPressed: () {
-              Navigator.pushNamed(context, '/tmp');
-            })
+            Expanded(
+                // ---------------------------------------------------------------------------------------- Currency Info - Info, Converter, Graph, Details
+                flex: 8,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(32, 0, 0, 0),
+                  child: CurrencyInfo(_currentCurrency),
+                ))
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      )),
     );
   }
 }
