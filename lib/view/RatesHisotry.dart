@@ -10,29 +10,28 @@ class RatesHistory extends StatefulWidget {
 }
 
 class _RatesHistoryState extends State<RatesHistory> {
-  
   Color pickColor(int index) {
     if (index % 2 == 0)
       return Colors.white;
     else
       return Theme.of(context).cardColor;
   }
-  
+
   TrackballBehavior _trackballBehavior;
-     @override
-    void initState(){
-      _trackballBehavior = TrackballBehavior(
-                  // Enables the trackball
-                  enable: true,
-                  activationMode: ActivationMode.singleTap,
-                  tooltipSettings: InteractiveTooltip(
-                    enable: true,
-                    format: 'point.x : point.y', 
-                  )
-                );
- 
-      super.initState();
-    }
+  @override
+  void initState() {
+    _trackballBehavior = TrackballBehavior(
+        // Enables the trackball
+        enable: true,
+        activationMode: ActivationMode.singleTap,
+        tooltipSettings: InteractiveTooltip(
+          enable: true,
+          format: 'point.x : point.y',
+        ));
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -55,9 +54,12 @@ class _RatesHistoryState extends State<RatesHistory> {
                           return Container(
                             child: SfCartesianChart(
                               //crosshairBehavior: _crosshairBehavior,
+
+                              palette: [Theme.of(context).primaryColor],
                               trackballBehavior: _trackballBehavior,
-                              primaryXAxis: DateTimeAxis( interactiveTooltip: InteractiveTooltip(enable: true)
-                              ),
+                              primaryXAxis: DateTimeAxis(
+                                  interactiveTooltip:
+                                      InteractiveTooltip(enable: true)),
                               series: <ChartSeries>[
                                 LineSeries<CurrencyDb, DateTime>(
                                     dataSource: snapshot.data,
