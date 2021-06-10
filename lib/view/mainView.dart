@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kantor_app/model/Currency.dart';
 import 'package:kantor_app/model/cookieManager.dart';
 import 'package:kantor_app/viewModel/ViewModel.dart';
 
@@ -11,7 +12,7 @@ class MainView extends StatefulWidget {
 
 class _MainViewState extends State<MainView> {
   ViewModel viewModel = ViewModel();
-  final _list = ViewModel.getCurrencyList();
+  List<Currency> _list = ViewModel.getCurrencyList();
 
   void setCurrentCurrency(currency) {
     setState(() {
@@ -28,7 +29,7 @@ class _MainViewState extends State<MainView> {
         _list[index].fav = true;
         CookieManager.addToCookie(_list[index].shortName);
       }
-      _list.sort((a, b) => b.fav.toString().compareTo(a.fav.toString()));
+      _list = ViewModel.getCurrencyList();
     });
   }
 

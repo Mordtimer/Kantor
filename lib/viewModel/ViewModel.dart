@@ -21,6 +21,7 @@ class ViewModel {
     _currencyList.forEach((element) {
       if (favList.contains(element.shortName)) element.fav = true;
     });
+    _currencyList.sort((a, b) => a.shortName.compareTo(b.shortName));
     _currencyList.sort((a, b) => b.fav.toString().compareTo(a.fav.toString()));
     return _currencyList;
   }
