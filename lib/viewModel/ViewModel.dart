@@ -1,5 +1,7 @@
 import 'package:kantor_app/model/CookieManager.dart';
 import 'package:kantor_app/model/Currency.dart';
+import 'package:kantor_app/model/api.dart';
+import 'package:kantor_app/model/currencyDb.dart';
 
 class ViewModel {
 
@@ -15,14 +17,14 @@ class ViewModel {
     Currency('Pound Sterling', 'GBP'),
     Currency('Australia Dollar', 'AUD'),
     Currency('Japan Yen', 'JPY'),
-    Currency('Russia Rouble', 'RUB'),
+    //Currency('Russia Rouble', 'RUB'),
     Currency('Switzerland Franc', 'CHF'),
     Currency('Canada Dollar', 'CAD'),
     Currency('Czech Koruna', 'CZK'),
   ];
 
-  Future<List<Currency>> getHistoryList(){
-
+  Future<List<CurrencyDb>> getHistoryList(String currency, int days) {
+    return API.fetchHistoryRates(currency, days);
   }
 
   Currency _currentCurrency = _currencyList[0];

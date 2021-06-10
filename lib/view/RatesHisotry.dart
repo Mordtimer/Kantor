@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:kantor_app/model/api.dart';
+import 'package:kantor_app/model/currencyDb.dart';
+import 'package:kantor_app/viewModel/ViewModel.dart';
 
 
 class RatesHistory extends StatefulWidget {
@@ -53,30 +56,39 @@ class _RatesHistoryState extends State<RatesHistory> {
                     ),
                   ),
                   Divider(height: 1),
-                  Expanded(
+                  FutureBuilder(
+                    future: API.fetchHistoryRates(ViewModel.instance.currentCurrency.shortName.toLowerCase(), 30),
+                    builder: (BuildContext context, AsyncSnapshot<List<CurrencyDb>> snapshot) {
+                      if (snapshot.hasData) return  Expanded(
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: ListView.builder(
                           // ---------------------------------------------------------------------------------------- Rates History Details List -
-                          itemCount: 50,
+                          itemCount: snapshot.data.length,
                           //separatorBuilder: (context, index) => Divider(),
                           itemBuilder: (context, index) {
                             return Container(
                               color: pickColor(index),
                               padding: EdgeInsets.all(8),
                               child: Row(
+                                
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text("01.01.2021"),
+                                  Text(snapshot.data[index].dateStr),
+                                                
                                   //Icon(icon) // Rate Indicator - UpArrowGreen/DownArrowRed
-                                  Text("1.00")
+                                  Text(snapshot.data[index].value.toString())
                                 ],
                               ),
                             );
                           }),
                     ),
-                  ),
+                  );
+                  return Container(color: Colors.red,);
+                    })
+                      
+                  
                 ],
               ),
             ),
