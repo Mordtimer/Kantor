@@ -22,6 +22,7 @@ class API {
     }
   }
 
+  // Zwraca liste z iluś tam określonych dni
   static Future<List<CurrencyDb>> fetchHistoryRates(
       String currency, int days) async {
     var queryParameters = {

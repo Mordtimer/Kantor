@@ -10,12 +10,11 @@ class MainView extends StatefulWidget {
 }
 
 class _MainViewState extends State<MainView> {
-  ViewModel viewModel = ViewModel();
-  final _list = ViewModel.getCurrencyList();
+  final _list = ViewModel.instance.getCurrencyList();
 
   void setCurrentCurrency(currency) {
     setState(() {
-      viewModel.currentCurrency = currency;
+      ViewModel.instance.currentCurrency = currency;
     });
   }
 
@@ -88,7 +87,7 @@ class _MainViewState extends State<MainView> {
                 flex: 8,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(32, 0, 0, 0),
-                  child: CurrencyInfo(viewModel.currentCurrency),
+                  child: CurrencyInfo(ViewModel.instance.currentCurrency),
                 ))
           ],
         ),

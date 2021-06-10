@@ -2,6 +2,13 @@ import 'package:kantor_app/model/CookieManager.dart';
 import 'package:kantor_app/model/Currency.dart';
 
 class ViewModel {
+
+  ViewModel._privateConstructor();
+
+  static final ViewModel _instance = ViewModel._privateConstructor();
+
+  static ViewModel get instance => _instance;
+
   static List<Currency> _currencyList = [
     Currency('Euro', 'EUR'),
     Currency('USA Dolar', 'USD'),
@@ -14,9 +21,15 @@ class ViewModel {
     Currency('Czech Koruna', 'CZK'),
   ];
 
-  Currency currentCurrency = _currencyList[0];
+  Future<List<Currency>> getHistoryList(){
 
-  static List<Currency> getCurrencyList() {
+  }
+
+  Currency _currentCurrency = _currencyList[0];
+  Currency get currentCurrency => _currentCurrency;
+  set currentCurrency (value) => _currentCurrency = value;
+
+  List<Currency> getCurrencyList() {
     final favList = CookieManager.getCookie();
     _currencyList.forEach((element) {
       if (favList.contains(element.shortName)) element.fav = true;
