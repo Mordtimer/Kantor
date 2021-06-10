@@ -11,12 +11,11 @@ class MainView extends StatefulWidget {
 }
 
 class _MainViewState extends State<MainView> {
-  ViewModel viewModel = ViewModel();
-  List<Currency> _list = ViewModel.getCurrencyList();
+  List<Currency>_list = ViewModel.instance.getCurrencyList();
 
   void setCurrentCurrency(currency) {
     setState(() {
-      viewModel.currentCurrency = currency;
+      ViewModel.instance.currentCurrency = currency;
     });
   }
 
@@ -29,7 +28,7 @@ class _MainViewState extends State<MainView> {
         _list[index].fav = true;
         CookieManager.addToCookie(_list[index].shortName);
       }
-      _list = ViewModel.getCurrencyList();
+      _list = ViewModel.instance.getCurrencyList();
     });
   }
 
@@ -89,7 +88,7 @@ class _MainViewState extends State<MainView> {
                 flex: 8,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(32, 0, 0, 0),
-                  child: CurrencyInfo(viewModel.currentCurrency),
+                  child: CurrencyInfo(ViewModel.instance.currentCurrency),
                 ))
           ],
         ),
