@@ -49,65 +49,115 @@ class _MainViewState extends State<MainView> {
       ));
     });
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Kantor', style: Theme.of(context).textTheme.headline3),
-        centerTitle: true,
-        toolbarHeight: 80,
-      ),
-      body: Container(
-          child: Padding(
-        padding: const EdgeInsets.fromLTRB(96, 0, 192, 0),
-        child: Row(
-          children: [
-            Expanded(
-              flex: 2,
-              child: Container(
-                color: Theme.of(context).cardColor,
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 16),
-                        child: ListView.separated(
-                            // ---------------------------------------------------------------------------------------- List of Currencies
-                            itemCount: _list.length,
-                            separatorBuilder: (context, index) => Divider(),
-                            itemBuilder: (context, index) {
-                              return ListTile(
-                                  // ---------------------------------------------------------------------------------------- List Item
-                                  trailing: IconButton(
-                                      icon: Icon(_list[index].fav
-                                          ? Icons.star
-                                          : Icons.star_border),
-                                      onPressed: () {
-                                        setFavCurrency(index);
-                                      }),
-                                  title: Text(_list[index].shortName,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline5),
-                                  subtitle: Text(_list[index].name),
-                                  onTap: () {
-                                    setCurrentCurrency(_list[index]);
-                                  });
-                            }),
+    var screenSize = MediaQuery.of(context).size;
+    if (screenSize.width > 900) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Kantor', style: Theme.of(context).textTheme.headline3),
+          centerTitle: true,
+          toolbarHeight: 80,
+        ),
+        body: Container(
+            child: Padding(
+          padding: EdgeInsets.fromLTRB(
+              screenSize.width / 20, 0, screenSize.width / 15, 0),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: Container(
+                  color: Theme.of(context).cardColor,
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 16),
+                          child: ListView.separated(
+                              // ---------------------------------------------------------------------------------------- List of Currencies
+                              itemCount: _list.length,
+                              separatorBuilder: (context, index) => Divider(),
+                              itemBuilder: (context, index) {
+                                return ListTile(
+                                    // ---------------------------------------------------------------------------------------- List Item
+                                    trailing: IconButton(
+                                        icon: Icon(_list[index].fav
+                                            ? Icons.star
+                                            : Icons.star_border),
+                                        onPressed: () {
+                                          setFavCurrency(index);
+                                        }),
+                                    title: Text(_list[index].shortName,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline5),
+                                    subtitle: Text(_list[index].name),
+                                    onTap: () {
+                                      setCurrentCurrency(_list[index]);
+                                    });
+                              }),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Expanded(
-                // ---------------------------------------------------------------------------------------- Currency Info - Info, Converter, Graph, Details
-                flex: 8,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(32, 0, 0, 0),
-                  child: CurrencyInfo(ViewModel.instance.currentCurrency),
-                ))
-          ],
+              Expanded(
+                  // ---------------------------------------------------------------------------------------- Currency Info - Info, Converter, Graph, Details
+                  flex: 8,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(32, 0, 0, 0),
+                    child: CurrencyInfo(ViewModel.instance.currentCurrency),
+                  ))
+            ],
+          ),
+        )),
+      );
+    } else {
+      return Scaffold(
+        drawer: Drawer(
+          child: ListView.separated(
+              // ---------------------------------------------------------------------------------------- List of Currencies
+              itemCount: _list.length,
+              separatorBuilder: (context, index) => Divider(),
+              itemBuilder: (context, index) {
+                return ListTile(
+                    // ---------------------------------------------------------------------------------------- List Item
+                    trailing: IconButton(
+                        icon: Icon(
+                            _list[index].fav ? Icons.star : Icons.star_border),
+                        onPressed: () {
+                          setFavCurrency(index);
+                        }),
+                    title: Text(_list[index].shortName,
+                        style: Theme.of(context).textTheme.headline5),
+                    subtitle: Text(_list[index].name),
+                    onTap: () {
+                      setCurrentCurrency(_list[index]);
+                    });
+              }),
         ),
-      )),
-    );
+        appBar: AppBar(
+          title: Text('Kantor', style: Theme.of(context).textTheme.headline3),
+          centerTitle: true,
+          toolbarHeight: 80,
+        ),
+        body: Container(
+            child: Padding(
+          padding: EdgeInsets.fromLTRB(
+              screenSize.width / 20, 0, screenSize.width / 15, 0),
+          child: Row(
+            children: [ 
+              Expanded(
+                  // ---------------------------------------------------------------------------------------- Currency Info - Info, Converter, Graph, Details
+                  flex: 8,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(32, 0, 0, 0),
+                    child: CurrencyInfo(ViewModel.instance.currentCurrency),
+                  ))
+            ],
+          ),
+        )),
+      );
+    }
   }
 }
