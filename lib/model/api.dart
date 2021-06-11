@@ -64,7 +64,7 @@ class API {
       "Access-Control_Allow_Origin": "*"
     });
 
-    print(response.body.toString());
+    //print(response.body.toString());
     if (response.statusCode == 200) {
       List json = jsonDecode(response.body);
       return json[1]["value"] - json[0]["value"];
@@ -87,7 +87,7 @@ class API {
       "Access-Control_Allow_Origin": "*"
     });
 
-    print(response.body.toString());
+    //print(response.body.toString());
     if (response.statusCode == 200) {
       List json = jsonDecode(response.body);
       data.add(json[1]["value"] - json[0]["value"]);
