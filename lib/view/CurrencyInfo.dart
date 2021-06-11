@@ -1,8 +1,10 @@
+// ignore: avoid_web_libraries_in_flutter
 import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:kantor_app/model/Currency.dart';
 import 'package:kantor_app/model/api.dart';
+import 'package:kantor_app/viewModel/ViewModel.dart';
 
 import 'CurrencyConverter.dart';
 import 'RatesHisotry.dart';
@@ -14,8 +16,8 @@ class CurrencyInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: API.fetchRate(currency.shortName.toLowerCase()),
-        builder: (BuildContext context, AsyncSnapshot<double> snapshot) {
+        future: API.fetchInfo(currency.shortName.toLowerCase()),
+        builder: (BuildContext context, AsyncSnapshot<List<double>> snapshot) {
           if (snapshot.hasData)
             return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,7 +52,7 @@ class CurrencyInfo extends StatelessWidget {
                                       children: [
                                         Text("Current Exchange",
                                             style: TextStyle(fontSize: 18)),
-                                        Text(snapshot.data.toString(),
+                                        Text(snapshot.data[1].toString(),
                                             style: TextStyle(fontSize: 18))
                                       ],
                                     ),
@@ -61,8 +63,10 @@ class CurrencyInfo extends StatelessWidget {
                                       children: [
                                         Text("Change",
                                             style: TextStyle(fontSize: 18)),
-                                        // Text(currency.change.toString(),
-                                        //     style: TextStyle(fontSize: 18))
+                                        Text(
+                                            snapshot.data[0]
+                                                .toStringAsPrecision(3),
+                                            style: TextStyle(fontSize: 18)),
                                       ],
                                     ),
                                     Divider(),
@@ -70,10 +74,14 @@ class CurrencyInfo extends StatelessWidget {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text("Change %",
+                                        Text("Change ‰",
                                             style: TextStyle(fontSize: 18)),
-                                        // Text(currency.changePercent.toString(),
-                                        //     style: TextStyle(fontSize: 18))
+                                        Text(
+                                            ((snapshot.data[0] /
+                                                        snapshot.data[1]) *
+                                                    1000)
+                                                .toStringAsPrecision(3),
+                                            style: TextStyle(fontSize: 18))
                                       ],
                                     ),
                                     Divider(),

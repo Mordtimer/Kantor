@@ -73,4 +73,43 @@ class API {
       throw Exception('Problem z zapytaniem');
     }
   }
+
+  static Future<List<double>> fetchInfo(String currency) async {
+    List<double> data = [];
+    var queryParameters = {
+      'currency': '${currency.toLowerCase()}',
+      'days': '2'
+    };
+    var uri = Uri.https('kantor-app.herokuapp.com', '/series', queryParameters);
+
+    final response = await http.get(uri, headers: {
+      HttpHeaders.contentTypeHeader: 'application/json',
+      "Access-Control_Allow_Origin": "*"
+    });
+
+    print(response.body.toString());
+    if (response.statusCode == 200) {
+      List json = jsonDecode(response.body);
+      data.add(json[1]["value"] - json[0]["value"]);
+    } else {
+      // można jakiś kod zwrócić
+      throw Exception('Problem z zapytaniem');
+    }
+
+    queryParameters = {'from': '${currency.toLowerCase()}', 'to': 'pln'};
+    uri = Uri.https('kantor-app.herokuapp.com', '/currencies', queryParameters);
+
+    final response2 = await http.get(uri, headers: {
+      HttpHeaders.contentTypeHeader: 'application/json',
+      "Access-Control_Allow_Origin": "*"
+    });
+    if (response2.statusCode == 200) {
+      Map json = jsonDecode(response2.body);
+      data.add(json["value"]);
+    } else {
+      // można jakiś kod zwrócić
+      throw Exception('Problem z zapytaniem');
+    }
+    return data;
+  }
 }
