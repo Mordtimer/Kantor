@@ -13,6 +13,8 @@ class MainView extends StatefulWidget {
 class _MainViewState extends State<MainView> {
   List<Currency> _list = ViewModel.instance.getCurrencyList();
 
+  bool _cookieInfoClosed = false;
+
   void setCurrentCurrency(currency) {
     setState(() {
       ViewModel.instance.currentCurrency = currency;
@@ -34,21 +36,25 @@ class _MainViewState extends State<MainView> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ScaffoldMessenger.maybeOf(context).showSnackBar(SnackBar(
-        padding: EdgeInsets.all(20),
-        content: Text(
-            'Ta strona używa cookies w celu: świadczenia usług. Korzystanie z witryny oznacza, że będą one umieszczane w Twoim urządzeniu końcowym.'),
-        //backgroundColor: Color(0xFFE0E0E0),
-        action: SnackBarAction(
-          textColor: Theme.of(super.context).primaryColor,
-          label: 'x',
-          onPressed: () {},
-        ),
-        duration: Duration(days: 365),
-      ));
-    });
-
+    if (!_cookieInfoClosed) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ScaffoldMessenger.maybeOf(context).showSnackBar(SnackBar(
+          padding: EdgeInsets.all(20),
+          content: Text(
+              'Ta strona używa cookies w celu: świadczenia usług. Korzystanie z witryny oznacza, że będą one umieszczane w Twoim urządzeniu końcowym.'),
+          //backgroundColor: Color(0xFFE0E0E0),
+          action: SnackBarAction(
+            textColor: Theme.of(super.context).primaryColor,
+            label: 'x',
+            onPressed: () {},
+          ),
+          duration: Duration(days: 365),
+        ));
+        setState(() {
+          _cookieInfoClosed = true;
+        });
+      });
+    }
     var screenSize = MediaQuery.of(context).size;
     if (screenSize.width > 900) {
       return Scaffold(
@@ -146,7 +152,7 @@ class _MainViewState extends State<MainView> {
           padding: EdgeInsets.fromLTRB(
               screenSize.width / 20, 0, screenSize.width / 15, 0),
           child: Row(
-            children: [ 
+            children: [
               Expanded(
                   // ---------------------------------------------------------------------------------------- Currency Info - Info, Converter, Graph, Details
                   flex: 8,
