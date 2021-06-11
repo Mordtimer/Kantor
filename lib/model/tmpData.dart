@@ -34,21 +34,13 @@ class TmpDataList {
 
 class TmpDataListShorts {
   static List<String> shorts = [
-    'PLN',
-    'EUR',
-    'USD',
     'AUD',
-    'JPY',
-    'CHF',
-    'BAM',
-    'BGN',
     'CAD',
-    'CUP',
-    'FJD',
-    'ISK',
-    'ILS',
-    'RUB',
-    'SGD',
-    'KRW'
+    'CHF',
+    'CZK',
+    'EUR',
+    'GBP',
+    'JPY',
+    'USD'
   ];
 }

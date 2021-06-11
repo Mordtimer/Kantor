@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:kantor_app/model/tmpData.dart';
+import 'package:kantor_app/viewModel/ViewModel.dart';
 
 class CurrencyConverter extends StatefulWidget {
   //---------------------------------------------------------------------------------------- TODO: Converter Functionality
@@ -13,10 +14,12 @@ class CurrencyConverter extends StatefulWidget {
 
 class _CurrencyConverterState extends State<CurrencyConverter> {
   List<String> _nameList = TmpDataListShorts.shorts;
-  String dropdownValueFrom = "USD";
-  String dropdownValueTo = "EUR";
+  String dropdownValueFrom = "EUR";
+  String dropdownValueTo = "USD";
   TextEditingController fieldValueFrom = TextEditingController();
   TextEditingController fieldValueTo = TextEditingController(text: "0");
+  double convertionRatio = 0;
+  ViewModel viewModel = ViewModel.instance;
 
   void swapConvertedCurrencies() {
     setState(() {
@@ -43,12 +46,9 @@ class _CurrencyConverterState extends State<CurrencyConverter> {
 
       if (response.statusCode == 200) {
         String convertionValue = response.body.toString();
-        double doubleValue = double.parse(
+        convertionRatio = double.parse(
             convertionValue.substring(9, convertionValue.length - 2));
-        double finalResult = double.parse(fieldValueFrom.text) * doubleValue;
-        setState(() {
-          fieldValueTo.text = finalResult.toStringAsFixed(2);
-        });
+        calculateFieldValue();
       } else {
         throw Exception('Failed to get converter response');
       }
@@ -56,6 +56,23 @@ class _CurrencyConverterState extends State<CurrencyConverter> {
       setState(() {
         fieldValueTo.text = 0.toString();
       });
+    }
+  }
+
+  void calculateFieldValue() {
+    if (convertionRatio == 0)
+      getConverterResponse();
+    else {
+      if (fieldValueFrom.text != null && fieldValueFrom.text != "") {
+        double result = double.parse(fieldValueFrom.text) * convertionRatio;
+        setState(() {
+          fieldValueTo.text = result.toStringAsFixed(2);
+        });
+      } else {
+        setState(() {
+          fieldValueTo.text = 0.toString();
+        });
+      }
     }
   }
 
@@ -94,7 +111,7 @@ class _CurrencyConverterState extends State<CurrencyConverter> {
                   borderRadius: BorderRadius.all(Radius.circular(8))),
               child: TextField(
                 controller: fieldValueFrom,
-                onChanged: (value) => getConverterResponse(),
+                onChanged: (value) => calculateFieldValue(),
                 style: TextStyle(fontSize: 24),
                 obscureText: false,
                 inputFormatters: <TextInputFormatter>[
