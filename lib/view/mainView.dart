@@ -34,6 +34,21 @@ class _MainViewState extends State<MainView> {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ScaffoldMessenger.maybeOf(context).showSnackBar(SnackBar(
+        padding: EdgeInsets.all(20),
+        content: Text(
+            'Ta strona używa cookies w celu: świadczenia usług. Korzystanie z witryny oznacza, że będą one umieszczane w Twoim urządzeniu końcowym.'),
+        //backgroundColor: Color(0xFFE0E0E0),
+        action: SnackBarAction(
+          textColor: Theme.of(super.context).primaryColor,
+          label: 'x',
+          onPressed: () {},
+        ),
+        duration: Duration(days: 365),
+      ));
+    });
+
     var screenSize = MediaQuery.of(context).size;
     if (screenSize.width > 900) {
       return Scaffold(
