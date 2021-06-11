@@ -89,7 +89,7 @@ class CurrencyInfo extends StatelessWidget {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text("Year High",
+                                        Text('',
                                             style: TextStyle(fontSize: 18)),
                                         // Text(currency.yearMax.toString(),
                                         //     style: TextStyle(fontSize: 18))
@@ -100,7 +100,7 @@ class CurrencyInfo extends StatelessWidget {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text("Year Low",
+                                        Text('',
                                             style: TextStyle(fontSize: 18)),
                                         // Text(currency.yearMin.toString(),
                                         //     style: TextStyle(fontSize: 18))
